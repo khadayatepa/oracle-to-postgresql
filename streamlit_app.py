@@ -1,25 +1,23 @@
 import streamlit as st
-import os
 from openai import OpenAI
 
-# Page setup
+# Page config
 st.set_page_config(page_title="Oracle to PostgreSQL Converter")
 st.markdown("<h1 style='text-align: center; color: green;'>Developed Oracle to postgresql code conversion by Prashant K</h1>", unsafe_allow_html=True)
 
-# Get OpenAI API key
-api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+# API Key Input
+st.sidebar.header("🔐 API Configuration")
+api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
 
-if not api_key:
-    st.error("OpenAI API key not found. Please set it in .streamlit/secrets.toml or as an environment variable.")
-else:
+if api_key:
     client = OpenAI(api_key=api_key)
 
-    # Two-column layout
+    # Layout
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Oracle PL/SQL Code")
-        oracle_code = st.text_area("Paste your Oracle code here:", height=400, key="oracle_code_input")
+        oracle_code = st.text_area("Paste your Oracle PL/SQL code here:", height=400)
 
     with col2:
         st.subheader("PostgreSQL Output")
@@ -42,3 +40,5 @@ else:
                     pgsql_output.text_area("PostgreSQL Code Output", pgsql_code, height=400)
                 except Exception as e:
                     st.error(f"Error during conversion: {e}")
+else:
+    st.warning("Please enter your OpenAI API key in the sidebar to start.")
